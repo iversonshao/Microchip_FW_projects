@@ -1,0 +1,28 @@
+// TODO 1.01
+uint32_t i = 0;
+
+
+// TODO 1.02
+        for ( i = 0 ; i < 2000000 ; i++ ){}
+        LED1_Toggle();
+        LED2_Toggle();
+
+
+// TODO 1.03
+        if ( BT1_Get() ) LED3_Clear();
+        else             LED3_Set();
+
+
+==============================================
+
+// TODO 1.02
+        // for ( i = 0 ; i < 2000000 ; i++ ){}
+        // LED1_Toggle();
+        // LED2_Toggle();
+
+        if ( ++i >= 2000000 )
+        {
+           i = 0;
+           LED1_Toggle();
+           LED2_Toggle();
+        }
