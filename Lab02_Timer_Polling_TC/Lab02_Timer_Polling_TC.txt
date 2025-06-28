@@ -1,0 +1,26 @@
+// TODO 2.01
+        // if ( ++i >= 2000000 )
+        // {
+        //    i = 0;
+        //    LED1_Toggle();
+        //    LED2_Toggle();
+        // }
+
+
+----------------------------------------------
+
+// TODO 2.02
+    TC0_TimerStart();
+    TC1_TimerStart();
+
+
+// TODO 2.03
+        if ( TC0_TimerPeriodHasExpired() )
+        {
+            LED1_Toggle();
+        }
+
+        if ( TC1_TimerPeriodHasExpired() )
+        {
+            LED2_Toggle();
+        }
