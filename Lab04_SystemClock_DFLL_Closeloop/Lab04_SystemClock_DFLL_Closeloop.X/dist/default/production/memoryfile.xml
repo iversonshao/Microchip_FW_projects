@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <executable name="dist/default/production/Lab04_SystemClock_DFLL_Closeloop.X.production.elf">
+    <memory name="program">
+      <units>bytes</units>
+      <length>1048576</length>
+      <used>2162</used>
+      <free>1046414</free>
+    </memory>
+    <memory name="data">
+      <units>bytes</units>
+      <length>262144</length>
+      <used>134</used>
+      <free>262010</free>
+    </memory>
+  </executable>
+</project>
