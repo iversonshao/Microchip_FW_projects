@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <executable name="dist/default/production/Lab05_COM_TX_Polling_SERCOM_USART.X.production.elf">
+    <memory name="program">
+      <units>bytes</units>
+      <length>1048576</length>
+      <used>2222</used>
+      <free>1046354</free>
+    </memory>
+    <memory name="data">
+      <units>bytes</units>
+      <length>262144</length>
+      <used>134</used>
+      <free>262010</free>
+    </memory>
+  </executable>
+</project>
