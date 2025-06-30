@@ -1,0 +1,38 @@
+// TODO 6.01
+#include <string.h>
+#include <stdio.h>
+
+
+// TODO 6.02
+uint8_t USART1_TransmitData[100];
+uint8_t USART1_ReceiveData[1];
+volatile uint8_t USART1_IsReceived = 0;
+volatile uint8_t USART1_IsTransmitted = 1;
+
+void USART1_Transmit(uintptr_t context)
+{
+    USART1_IsTransmitted = 1;
+}
+
+void USART1_Receive(uintptr_t context)
+{
+    USART1_IsReceived = 1;
+}
+
+
+// TODO 6.03
+    SERCOM1_USART_ReadCallbackRegister(USART1_Receive, (uintptr_t) NULL);
+    SERCOM1_USART_WriteCallbackRegister(USART1_Transmit, (uintptr_t) NULL);
+    SERCOM1_USART_Read(USART1_ReceiveData, 1);
+
+
+// TODO 6.04
+        if (USART1_IsReceived)
+        {
+            USART1_IsReceived = 0;
+
+            sprintf( (char*)USART1_TransmitData, "Received Data : %1c\r\n", USART1_ReceiveData[0] );
+            SERCOM1_USART_Write( USART1_TransmitData, strlen((char*)USART1_TransmitData) );
+            SERCOM1_USART_Read( USART1_ReceiveData, 1 );
+        }
+

@@ -1,0 +1,83 @@
+// TODO 7.01
+#include "myprintf.h"
+
+
+// TODO 7.02
+    myprintf( "#RST;#CLS;#HID;" );    // Reset Console, Clear screen and Hide cursor
+
+
+// TODO 7.03
+            // SERCOM1_USART_Write("Hello world!\r\n", 14);
+            myprintf( "@1,1;Hello World!!" );
+
+
+// TODO 7.04
+            // sprintf( (char*)USART1_TransmitData, "Received Data : %1c\r\n", USART1_ReceiveData[0] );
+            // SERCOM1_USART_Write( USART1_TransmitData, strlen((char*)USART1_TransmitData) );
+            myprintf( "@1,5;Received Data : %1c", USART1_ReceiveData[0] );
+            
+            
+//=============================================================================
+//   Appendix : Rainbow Text
+//=============================================================================
+// Reset Console, Clear screen and Hide cursor
+myprintf( "#RST;#CLS;#HID;" );
+myprintf(
+	"#FGC:FF0000;R"
+	"#FGC:FF7F00;A"
+	"#FGC:FFFF00;I"
+	"#FGC:00FF00;N"
+	"#FGC:0000FF;B"
+	"#FGC:4B0082;O"
+	"#FGC:8B00FF;W"
+	"#RST;\r\n"
+);
+
+myprintf(
+	"#BGC:FF0000;R"
+	"#BGC:FF7F00;A"
+	"#BGC:FFFF00;I"
+	"#BGC:00FF00;N"
+	"#BGC:0000FF;B"
+	"#BGC:4B0082;O"
+	"#BGC:8B00FF;W"
+	"#RST;\r\n"
+);
+
+
+//=============================================================================
+//   Appendix : Microchip Logo Text
+//=============================================================================
+// Picture to Text
+// http://www.digole.com/tools/PicturetoC_Hex_converter.php
+uint8_t MicrochipLogo32x16[64] =
+{
+    0x00,0x3f,0xfc,0x00,0x01,0xff,0xff,0x00,0x0f,0xff,0xff,0x80,0x3f,0x8f,0xf1,0xc0,
+    0x7f,0x07,0xe0,0xe0,0xfc,0x01,0xc0,0x70,0xfe,0x00,0xc0,0x1c,0xf3,0x80,0x60,0x0e,
+    0xc1,0xc0,0x38,0x07,0x80,0x60,0x1c,0x03,0x00,0x70,0x0e,0x00,0x01,0xfc,0x1f,0x80,
+    0x07,0xfe,0x3f,0xc0,0x07,0xff,0xff,0xe0,0x01,0xff,0xff,0x80,0x00,0x3f,0xf8,0x00
+};
+
+// Reset Console, Clear screen and Hide cursor
+myprintf( "#RST;#CLS;#HID;" );
+
+// Microchip Logo Decode
+for (int y = 0; y < 16; y++)
+{
+    for (int byte_idx = 0; byte_idx < 4; byte_idx++)
+    {
+        uint8_t byte = MicrochipLogo32x16[y * 4 + byte_idx];
+        for (int bit = 0; bit < 8; bit++)
+        {
+            int x = byte_idx * 8 + bit + 1;
+            myprintf("@%d,%d;%s#RST;", x, y+1, (byte&(0x80>>bit)) ? "#BGC:FF0000; " : "#BGC:FFFFFF; ");
+        }
+    }
+}
+
+// Microchip Logo Copyright circle
+myprintf( "@29,1;#BGC:000000; @28,2;#BGC:000000; @30,2;#BGC:000000; @29,3;#BGC:000000; " );
+
+// Microchip Logo Copyright R
+myprintf( "@29,2;#INV;R#RST;" );
+
