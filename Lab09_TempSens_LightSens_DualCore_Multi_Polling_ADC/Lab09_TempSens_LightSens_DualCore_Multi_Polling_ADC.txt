@@ -1,0 +1,21 @@
+// TODO 9.01
+uint16_t ADC1_Result[2];
+
+
+// TODO 9.02
+    ADC1_Enable();
+
+
+// TODO 9.03
+            ADC1_ChannelSelect( ADC_POSINPUT_AIN10, ADC_INPUTCTRL_MUXNEG_AVSS );
+            ADC1_ConversionStart();
+            while( !ADC1_ConversionStatusGet() ){}
+            ADC1_Result[0] = ADC1_ConversionResultGet();
+            myprintf( "@1,3;Temperature Value : %4d", ADC1_Result[0] );
+
+// TODO 9.04
+            ADC1_ChannelSelect( ADC_POSINPUT_AIN11, ADC_INPUTCTRL_MUXNEG_AVSS );
+            ADC1_ConversionStart();
+            while( !ADC1_ConversionStatusGet() ){}
+            ADC1_Result[1] = ADC1_ConversionResultGet();
+            myprintf( "@1,4;Lightness Value : %4d", ADC1_Result[1] );

@@ -1,0 +1,13 @@
+// TODO 8.01
+uint16_t ADC0_Result;
+
+
+// TODO 8.02
+    ADC0_Enable();
+
+
+// TODO 8.03
+            ADC0_ConversionStart();
+            while( !ADC0_ConversionStatusGet() ){}
+            ADC0_Result = ADC0_ConversionResultGet();
+            myprintf( "@1,2;VR1 Value : %4d", ADC0_Result );
