@@ -1,0 +1,86 @@
+--------------------------------------------------------------------------------
+LCM.c - check line 55 to see how SERCOM5 and GPIO are used in the LCM driver.
+--------------------------------------------------------------------------------
+// APP055 SERCOM5_SPI Pin Configuration
+// SERCOM5 SPI : MOSI (PB02)
+// SERCOM5 SPI : SCK  (PB03)
+// OLED_nCS    : SS   (PB00), GPIO Output Latch high
+// OLED_nRST   : Reset(PB31), GPIO Output Latch high
+// OLED_A0     : A0   (PB01), GPIO Output Latch low (Command:0, Data:1)
+#define LCM_HW_RESET_ENABLE       1  // Enable OLED Reset PIN on PB31
+#define LCM_SPI_CS_GPIO           1  // Enable SPI GPIO Slave Select on PB00
+#define LCM_SPI_Write(...)        SERCOM5_SPI_Write(__VA_ARGS__)
+#define LCM_SPI_IsWriteBusy(...)  SERCOM5_SPI_IsTransmitterBusy(__VA_ARGS__)
+#define LCM_RESET_Enable(...)     OLED_nRST_Clear(__VA_ARGS__)
+#define LCM_RESET_Disable(...)    OLED_nRST_Set(__VA_ARGS__)
+#define LCM_BUS_CMD(...)          OLED_A0_Clear(__VA_ARGS__)
+#define LCM_BUS_DAT(...)          OLED_A0_Set(__VA_ARGS__)
+
+#if LCM_SPI_CS_GPIO
+#define LCM_SPI_CS_Enable(...)    OLED_nCS_Clear(__VA_ARGS__)
+#define LCM_SPI_CS_Disable(...)   OLED_nCS_Set(__VA_ARGS__)
+#endif
+
+
+
+--------------------------------------------------------------------------------
+main.c
+--------------------------------------------------------------------------------
+
+// TODO 14.01
+#include "Delay.h"
+#include "GraphicLib.h"
+#include "GraphicApp.h"
+#include "Microchip_Logo.h"
+
+
+// TODO 14.02
+    // OLED HW and Graphic Layers Initial and Clean all Frame Buffer
+    GPL_ScreenInit();
+
+    // Show Only Graphic Layers
+    GPL_LayerShow( LAYER_GRAPHIC, LAYER_SHOW );
+    GPL_LayerShow( LAYER_TEXT,    LAYER_HIDE );
+
+    // Splash Logo In
+    DrawSplashAnimation( 128, 0, 0, 0, 4, Microchip_Logo, LAYER_GRAPHIC );
+
+    // Delay after animation ends
+    DelayMS(DELAY_TIMER_OLED_DELAY, 1000);
+
+    // Splash Logo Out
+    DrawSplashAnimation( 0, 0, -128, 0, 8, Microchip_Logo, LAYER_GRAPHIC );
+
+    // Show Both Text and Graphic Layers
+    GPL_LayerShow( LAYER_GRAPHIC, LAYER_SHOW );
+    GPL_LayerShow( LAYER_TEXT,    LAYER_SHOW );
+
+    // Draw on Text Layer
+    GPL_LayerSet( LAYER_TEXT );
+    // Clean Text Layer Buffer
+    GPL_LayerClean( LAYER_TEXT );
+    GPL_Printf( 0,  0, BG_SOLID, TEXT_NORMAL, "SysClock  : %dMHz", CPU_CLOCK_FREQUENCY/1000000 );
+    GPL_Printf( 0,  8, BG_SOLID, TEXT_NORMAL, "TC0 period:  %ldms", (TC0_Timer16bitPeriodGet()+1)*1000 / TC0_TimerFrequencyGet());
+    GPL_Printf( 0, 16, BG_SOLID, TEXT_NORMAL, "TC1 period:  %ldms", (TC1_Timer16bitPeriodGet()+1)*1000 / TC1_TimerFrequencyGet());
+    GPL_Printf( 0, 56, BG_SOLID, TEXT_NORMAL, "Received Data :");
+    GPL_ScreenUpdate();
+
+
+// TODO 14.03
+            GPL_Printf( 0, 24, BG_SOLID, TEXT_NORMAL, "PWM Duty  : %3d%%", Duty);
+            GPL_ScreenUpdate();
+
+
+// TODO 14.04
+            GPL_Printf( 0, 56, BG_SOLID, TEXT_NORMAL, "Received Data : %c", USART1_ReceiveData[0]);
+            GPL_ScreenUpdate();
+
+
+// TODO 14.05
+            GPL_Printf( 0, 32, BG_SOLID, TEXT_NORMAL, "VR1   : %4d", ADC0_Result);
+
+
+// TODO 14.06
+            GPL_Printf( 0, 40, BG_SOLID, TEXT_NORMAL, "Temp  : %4d", ADC1_Result[0]);
+            GPL_Printf( 0, 48, BG_SOLID, TEXT_NORMAL, "Light : %4d", ADC1_Result[1]);
+

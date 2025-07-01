@@ -1,0 +1,9 @@
+// TODO 12.01
+            TCC1_PWM24bitDutySet(TCC1_CHANNEL3, (((uint32_t) ADC0_Result * TCC1_PWM24bitPeriodGet() + 1) / 4095));
+
+
+// TODO 12.02
+            myprintf("@1,10;Lab12 Mathematical comparison:");
+            myprintf("@1,11;DIV before MUL  : %6d", (ADC0_Result / 4095) * (TCC1_PWM24bitPeriodGet() + 1));
+            myprintf("@1,12;16-bits Integer : %6d", (uint16_t) (ADC0_Result * (TCC1_PWM24bitPeriodGet() + 1)) / 4095);
+            myprintf("@1,13;32-bits Integer : %6d", (uint32_t) (ADC0_Result * (TCC1_PWM24bitPeriodGet() + 1)) / 4095);
