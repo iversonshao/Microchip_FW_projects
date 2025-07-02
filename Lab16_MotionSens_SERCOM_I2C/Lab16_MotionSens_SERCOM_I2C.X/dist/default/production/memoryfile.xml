@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <executable name="dist/default/production/Lab16_MotionSens_SERCOM_I2C.X.production.elf">
+    <memory name="program">
+      <units>bytes</units>
+      <length>1048576</length>
+      <used>37925</used>
+      <free>1010651</free>
+    </memory>
+    <memory name="data">
+      <units>bytes</units>
+      <length>262144</length>
+      <used>22108</used>
+      <free>240036</free>
+    </memory>
+  </executable>
+</project>
