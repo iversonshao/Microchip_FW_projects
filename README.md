@@ -207,6 +207,8 @@ Enhanced terminal interface with:
 
 ---
 
+---
+
 # Lab08 - ADC Polling Software Trigger
 
 ## What We Do
@@ -405,3 +407,275 @@ Implement variable LED brightness control by using ADC potentiometer value to dy
 PWM_Duty = (ADC_Value * PWM_Period) / 4095
 // Using 32-bit arithmetic to prevent overflow
 TCC1_PWM24bitDutySet(TCC1_CHANNEL3, ((uint32_t)ADC0_Result * (TCC1_PWM24bitPeriodGet() + 1)) / 4095);
+```
+
+## Mathematical Comparison
+The lab demonstrates different calculation methods:
+- **Division before Multiplication**: Causes precision loss
+- **16-bit Integer Overflow**: Results in incorrect values
+- **32-bit Integer Calculation**: Provides accurate results
+
+## Project Name
+Lab12_LED_Dimming_Adjustable_TCC_PWM
+
+## Result
+LED3 brightness is controlled by the ADC value from VR1 potentiometer, with mathematical comparison results displayed on Tera Term terminal.
+
+---
+
+# Lab13 - LED Breath TCC PWM
+
+## What We Do
+Use TC1 timer to control PWM duty cycle for creating a breathing light effect on LED3.
+
+## Lab Requirements
+- Duty cycle changes in steps of 2% every 40ms intervals
+- Create breathing pattern: Duty 0% → Duty 100% → Duty 0% → repeat
+- Use TC1 timer interrupt to control the breathing algorithm
+- Maintain other lab functionalities (ADC, UART, etc.)
+
+## Key Algorithm
+```c
+// Breathing light variables
+uint8_t Duty = 50;
+int8_t DutyDistance = 2;
+
+// In TC1 timer interrupt
+Duty += DutyDistance;
+if (Duty >= 100 || Duty <= 0)
+    DutyDistance = -DutyDistance;
+
+TCC1_PWM24bitDutySet(TCC1_CHANNEL3, ((uint32_t)Duty * (TCC1_PWM24bitPeriodGet() + 1)) / 100);
+```
+
+## Breathing Pattern Timing
+- **Timer Period**: TC1 = 40ms
+- **Duty Step**: ±2% per timer interrupt
+- **Full Cycle Time**: ~4 seconds (0% → 100% → 0%)
+- **Smooth Transition**: Creates natural breathing effect
+
+## Key Changes
+- Define breathing control variables (Duty, DutyDistance)
+- Implement breathing algorithm in TC1 timer callback
+- Comment out ADC-controlled dimming from Lab12
+- Maintain all other peripheral functions
+
+## Project Name
+Lab13_LED_Breath_TCC_PWM
+
+## Result
+LED3 brightness is automatically controlled with a breathing pattern. The PWM duty cycle changes in steps of 2% at 40ms intervals, creating a smooth breathing light effect while maintaining all other system functions.
+
+# Lab14 - OLED Graphics SERCOM-SPI
+
+## What We Do
+Learn SPI communication by implementing SERCOM-SPI interface to control an SSD1306 OLED display with graphics library and custom logo functionality.
+
+## Lab Requirements
+- Configure SERCOM5 as SPI Master with 1MHz clock speed
+- Control SSD1306 128x64 monochrome OLED display via SPI
+- Implement multi-layer graphics system (LAYER_GRAPHIC, LAYER_TEXT)
+- Display splash logo animation and real-time peripheral data
+- Use TC2 timer for software delay functions
+- Integrate all previous lab functionalities with OLED display
+
+## Hardware Mapping
+| Component | Pin | Function | Purpose |
+|-----------|-----|----------|---------|
+| OLED MOSI | PB02 | SERCOM5_PAD0 | SPI Data Output |
+| OLED SCK | PB03 | SERCOM5_PAD1 | SPI Clock |
+| OLED CS | PB00 | GPIO Output | SPI Chip Select |
+| OLED A0 | PB01 | GPIO Output | Data/Command Control |
+| OLED Reset | PB31 | GPIO Output | Hardware Reset |
+
+## Key Configuration
+- **SERCOM5**: SPI Master mode, Transfer Mode 0
+- **SPI Speed**: 1MHz (1,000,000 Hz)
+- **Display**: SSD1306 128x64 OLED, 1-bit per pixel
+- **Graphics Layers**: LAYER_GRAPHIC and LAYER_TEXT
+- **Software Delay**: TC2-based timer with 1ms tick
+
+## Key Features
+- **Splash Animation**: Microchip logo sliding in/out animation
+- **Multi-layer Display**: Separate graphics and text layers
+- **Real-time Data**: System clock, timer periods, ADC values, UART data
+- **Graphics Library**: Complete drawing functions (points, lines, shapes, text)
+- **Printf-like Functions**: GPL_Printf with positioning and formatting
+
+## Key Changes
+- Add SERCOM5 SPI Master configuration in MCC Harmony
+- Configure GPIO pins for OLED control signals (CS, A0, Reset)
+- Add TC2 timer for software delay implementation
+- Include graphics library files (LCM.c/.h, GraphicLib.c/.h, GraphicApp.c/.h)
+- Implement splash animation and real-time data display
+- Integrate OLED display with all existing peripheral functions
+
+## Project Name
+Lab14_OLED_Graphic_SERCOM_SPI
+
+## Result
+OLED display shows animated Microchip logo splash screen on startup, followed by real-time system information including 48MHz clock frequency, timer periods (TC0: 500ms, TC1: 40ms), PWM duty cycle with breathing pattern, ADC sensor values (VR1, temperature, light sensor), and UART received characters. All data updates in real-time while maintaining LED operations and existing functionality.
+
+---
+
+# Lab15 - Design Your Own Logo
+
+## What We Do
+Learn to create custom graphics using OLED Assistant software and integrate custom logos into the OLED display project for personalized splash screens.
+
+## Lab Requirements
+- Use OLED Assistant tool to design custom graphics on PC
+- Create bitmap images with 128x64 monochrome format
+- Export custom designs as C header files
+- Replace default Microchip logo with custom design
+- Support text input, icon placement, and image manipulation
+- Implement custom logo animation sequences
+
+## Key Features
+### OLED Assistant Tool Functions
+- **Drawing Tools**: Pen/eraser with adjustable sizes for pixel-level editing
+- **Shape Tools**: Lines, rectangles, circles, polygons for geometric designs
+- **Text Input**: Multiple system fonts with adjustable size control
+- **Icon Library**: Built-in symbols and Unicode characters
+- **Image Import**: Load external BMP/PNG files for editing
+- **Image Manipulation**: Zoom, flip horizontal/vertical, invert colors
+- **Region Operations**: Copy/paste selected areas, region-based editing
+- **Export Function**: Generate C header files with bitmap arrays
+
+### Advanced Features
+- **Multi-frame Animation**: Create sequences for wave effects and transitions
+- **Custom Font Support**: Access to Windows system fonts
+- **Preview Mode**: Real-time OLED simulation with accurate pixel representation
+- **Batch Export**: Multiple image arrays in single header file
+- **Professional Tools**: Undo/redo, keyboard shortcuts, precise positioning
+
+## Design Process
+1. **Initialize**: Open OLED Assistant and set 128x64 canvas
+2. **Create Graphics**: Use drawing tools or import existing images
+3. **Add Text**: Select regions and input custom text with various fonts
+4. **Apply Effects**: Use flip, invert, zoom operations for refinement
+5. **Export**: Generate C header file with properly formatted bitmap data
+6. **Integration**: Replace Microchip_Logo.h in project source folder
+7. **Program**: Build and upload to see custom logo in action
+
+## Key Operations
+- **Left Click + Drag**: Draw/paint pixels in pen mode
+- **Right Click + Drag**: Select rectangular regions for operations
+- **Region Selection**: Copy specific areas to clipboard for reuse
+- **Icon Mode**: Place symbols using text characters and fonts
+- **Image Import**: Load and convert external images to monochrome
+- **Export Settings**: Configure C array names and header file format
+
+## Key Changes
+- Use OLED Assistant software to create custom graphics
+- Design personalized logo or import existing company/personal branding
+- Export as C header file with same format as Microchip_Logo.h
+- Replace original logo file in project source directory
+- Maintain same animation functions for smooth logo transitions
+- Optional: Create multiple frames for advanced animation effects
+
+## Project Name
+Lab15_Custom_Logo_Design
+
+## Result
+Custom designed logo displays on OLED with personalized startup animation, replacing the default Microchip logo. The system supports professional logo design capabilities, easy integration with existing OLED graphics system, and maintains all previous lab functionality while showcasing custom branding. Advanced users can create multi-frame animations for wave effects, company logos, educational graphics, or personal artistic expressions.
+
+## Advanced Applications
+- **Corporate Branding**: Company logos on embedded product displays
+- **Educational Tools**: Custom diagrams and visual teaching aids
+- **Personal Projects**: Artistic expressions and creative graphics
+- **Product Identification**: Custom startup screens for different product variants
+- **Animation Sequences**: Professional-looking logo transitions and effects
+
+# Lab16 - Motion Sensor Application SERCOM-I2C
+
+## What We Do
+Learn I2C communication by implementing SERCOM-I2C interface to control a 6-axis motion sensor (accelerometer + gyroscope) and create interactive motion-based applications.
+
+## Lab Requirements
+- Configure SERCOM3 as I2C Master with 100kHz clock speed
+- Interface with TDK ICM-42670-P 6-axis MEMS Motion Sensor (I2C address 0x68)
+- Read accelerometer data (ax, ay, az) and gyroscope data (gx, gy, gz)
+- Display sensor values via UART terminal using myprintf
+- Implement four interactive motion applications on OLED display
+- Use BT1 to switch between applications and BT2 for zero calibration
+
+## Hardware Mapping
+| Component | Pin | I2C Function | Purpose |
+|-----------|-----|--------------|---------|
+| Motion Sensor SDA | PA22 | SERCOM3_PAD0 | I2C Data Line |
+| Motion Sensor SCL | PA23 | SERCOM3_PAD1 | I2C Clock Line |
+| TDK ICM-42670-P | - | 0x68 | 6-axis Motion Sensor |
+
+## Key Configuration
+- **SERCOM3**: I2C Master mode
+- **I2C Speed**: 100kHz (Standard mode)
+- **Sensor**: TDK ICM-42670-P with 3-axis accelerometer + 3-axis gyroscope
+- **Communication**: Non-blocking I2C with callback functions
+- **Data Ready**: Interrupt-based sensor reading using status register polling
+
+## Motion Applications
+### Application 0: Level Bubble
+- Horizontal bubble level simulation
+- Uses accelerometer ax, ay for tilt detection
+- Shows centering bubble with smooth physics
+
+### Application 1: Balance Ball
+- Vertically reactive ball with bounce physics
+- Gravity simulation based on accelerometer input
+- Real-time ball movement responding to board tilt
+
+### Application 2: Rotation Cube (2D)
+- 2D rotating cube with physics simulation
+- Uses accelerometer for rotation control
+- Demonstrates object rotation algorithms
+
+### Application 3: Surround Dice (3D)
+- Full 3D cube with six dice faces
+- Combines accelerometer and gyroscope data
+- Advanced 3D rendering with Z-buffer and hidden line removal
+- Shows different dice face numbers (1-6)
+
+## Key Features
+- **I2C Protocol**: Master-slave communication with motion sensor
+- **Sensor Initialization**: Software reset, WHO_AM_I verification, register configuration
+- **Data Ready Detection**: Interrupt status register monitoring
+- **Multi-axis Reading**: Simultaneous accelerometer and gyroscope data acquisition
+- **Real-time Display**: Live sensor values on UART terminal
+- **Interactive Graphics**: Four different motion-responsive applications
+- **3D Mathematics**: Advanced 3D rendering algorithms with rotation matrices
+- **Physics Simulation**: Gravity, bounce, and inertia effects
+
+## Technical Implementation
+### ICM-42670-P Initialization Sequence
+1. Software reset (register 0x02 = 0x10)
+2. WHO_AM_I verification (register 0x75 should return 0x67)
+3. Configure gyroscope (register 0x20 = 0x0C)
+4. Configure accelerometer (register 0x21 = 0x0C)
+5. Enable low noise mode (register 0x1F = 0x0F)
+
+### Data Reading Process
+1. Check data ready status (register 0x39, bit 0)
+2. Read accelerometer data (registers 0x0B-0x10)
+3. Read gyroscope data (registers 0x11-0x16)
+4. Convert 16-bit signed values to motion parameters
+
+### Application Control
+- **BT1**: Cycle through four applications (0-3)
+- **BT2**: Zero calibration / reset application state
+- **TC1 Timer**: 40ms periodic data ready requests
+- **I2C Callback**: Automatic sensor data processing
+
+## Project Name
+Lab16_MotionSens_SERCOM_I2C
+
+## Result
+OLED display shows four interactive motion applications that respond in real-time to board movement. Terminal displays live accelerometer and gyroscope values along with sensor initialization status. The system demonstrates advanced I2C communication, 6DOF motion sensing, 3D graphics rendering, and real-time physics simulation, creating an engaging demonstration of motion-controlled embedded applications.
+
+## Advanced Features
+- **3D Graphics Engine**: Complete Z-buffer implementation with hidden surface removal
+- **Motion Physics**: Realistic gravity, bouncing, and momentum simulation
+- **Multi-layer Graphics**: Separate graphics and text rendering layers
+- **AI-Assisted Development**: Applications developed with AI assistance for advanced algorithms
+- **Professional Motion Sensing**: Industrial-grade 6-axis MEMS sensor integration
+- **Real-time Performance**: Smooth 25Hz motion updates with responsive graphics
