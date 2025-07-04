@@ -101,24 +101,25 @@ void TC1_TimerExpired(TC_TIMER_STATUS status, uintptr_t context)
     }
 }
 
+
 // TODO 15.01 - Advanced - Store into multiple image arrays
-//void MicrochipLogoWave( uint32_t ms )
-//{
-//    const unsigned char* WaveImageSequences[11] = {
-//    Microchip_Logo_wave1,  Microchip_Logo_wave2, Microchip_Logo_wave3,
-//    Microchip_Logo_wave4,  Microchip_Logo_wave5, Microchip_Logo_wave6,
-//    Microchip_Logo_wave7,  Microchip_Logo_wave8, Microchip_Logo_wave9,
-//    Microchip_Logo_wave10, Microchip_Logo};
-//
-//    GPL_LayerSet(LAYER_GRAPHIC);
-//    for(int i=0 ; i<11 ; i++ )
-//    {
-//        GPL_LayerClean(LAYER_GRAPHIC);
-//        GPL_DrawBitmap(0, 0, LCM_WIDTH, LCM_HEIGHT, BG_SOLID, WaveImageSequences[i]);
-//        GPL_ScreenUpdate();
-//        DelayMS(DELAY_TIMER_OLED_DELAY, ms);
-//    }
-//}
+void MicrochipLogoWave( uint32_t ms )
+{
+    const unsigned char* WaveImageSequences[11] = {
+    Microchip_Logo_wave1,  Microchip_Logo_wave2, Microchip_Logo_wave3,
+    Microchip_Logo_wave4,  Microchip_Logo_wave5, Microchip_Logo_wave6,
+    Microchip_Logo_wave7,  Microchip_Logo_wave8, Microchip_Logo_wave9, 
+    Microchip_Logo};
+
+    GPL_LayerSet(LAYER_GRAPHIC);
+    for(int i=0 ; i<10 ; i++ )
+    {
+        GPL_LayerClean(LAYER_GRAPHIC);
+        GPL_DrawBitmap(0, 0, LCM_WIDTH, LCM_HEIGHT, BG_SOLID, WaveImageSequences[i]);
+        GPL_ScreenUpdate();
+        DelayMS(DELAY_TIMER_OLED_DELAY, ms);
+    }
+}
 
 // *****************************************************************************
 // *****************************************************************************
@@ -162,7 +163,14 @@ int main ( void )
 
     // Delay after animation ends
     DelayMS(DELAY_TIMER_OLED_DELAY, 1000);
-
+    
+// TODO 15.02 - Advanced - Store into multiple image arrays
+    // Microchip Logo Wave animation
+    MicrochipLogoWave(50);
+    
+    // Delay after animation ends
+    DelayMS(DELAY_TIMER_OLED_DELAY, 500);
+    
     // Splash Logo Out
     DrawSplashAnimation( 0, 0, -128, 0, 8, Microchip_Logo, LAYER_GRAPHIC );
 
